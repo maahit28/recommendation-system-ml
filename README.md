@@ -1,21 +1,31 @@
-# Recommendation System (Rule-Based + ML)
+# 🎬🍔 Recommendation System (Rule-Based + ML + UI)
 
-## Description
-This project is a simple recommendation system that suggests movies and food items
-based on user preferences. It combines a rule-based approach with a basic
-machine learning model for movie genre prediction.
+## Overview
+This project is a hybrid recommendation system built using Python.  
+It combines:
+- Rule-based logic
+- Machine Learning (Naive Bayes)
+- Streamlit-based web UI
+
+Users can get movie and food recommendations through a simple interactive interface.
+
+---
 
 ## Features
-- Rule-based movie recommendations
-- Rule-based food recommendations
-- ML-based movie genre prediction using Naive Bayes
-- Modular and clean project structure
+- 🎬 Rule-based movie recommendations
+- 🍔 Rule-based food recommendations
+- 🤖 ML-based movie genre prediction from text
+- 🌐 Web UI using Streamlit
+- Clean, modular project structure
+
+---
 
 ## Tech Stack
 - Python
 - Scikit-learn
+- Streamlit
 - Git & GitHub
 
-## How to Run
-```bash
-python main.py
+---
+
+## Project Structure
