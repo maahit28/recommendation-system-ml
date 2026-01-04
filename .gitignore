@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+.vscode/
+test_filter.py
+test_similarity.py
+__pycache__/

@@ -1,0 +1,21 @@
+movie_id,title,content_type,region,genre,language,year,description,popularity_score
+1,Avengers Endgame,movie,hollywood,action,english,2019,Superheroes unite to save the universe from destruction,9.8
+2,Inception,movie,hollywood,thriller,english,2010,A skilled thief enters dreams to steal secrets and plant ideas,9.6
+3,The Dark Knight,movie,hollywood,action,english,2008,Batman faces a dangerous criminal mastermind in Gotham City,9.7
+4,Interstellar,movie,hollywood,sci-fi,english,2014,A team travels through space to save humanity from extinction,9.5
+5,Money Heist,series,hollywood,thriller,english,2017,A criminal mastermind plans a grand heist on the national mint,9.2
+6,Breaking Bad,series,hollywood,thriller,english,2008,A chemistry teacher turns into a drug kingpin,9.9
+7,Forrest Gump,movie,hollywood,romance,english,1994,A man experiences extraordinary events with a simple heart,9.4
+8,Titanic,movie,hollywood,romance,english,1997,A love story unfolds on the ill fated ship Titanic,9.3
+9,KGF,movie,bollywood,action,hindi,2018,A gangster rises to power in the dangerous gold mines,8.9
+10,RRR,movie,bollywood,action,hindi,2022,Two revolutionaries fight against British rule,9.0
+11,3 Idiots,movie,bollywood,comedy,hindi,2009,Three friends navigate life education and friendship,9.1
+12,Dangal,movie,bollywood,drama,hindi,2016,A father trains his daughters to become wrestling champions,9.2
+13,Parasite,movie,korean,thriller,korean,2019,A poor family infiltrates a wealthy household,9.0
+14,Train to Busan,movie,korean,thriller,korean,2016,Passengers struggle to survive a zombie outbreak on a train,8.8
+15,Crash Landing on You,series,korean,romance,korean,2019,A businesswoman lands in North Korea and finds love,8.9
+16,Your Name,movie,anime,romance,japanese,2016,Two strangers connect across time through dreams,9.1
+17,Attack on Titan,series,anime,action,japanese,2013,Humans fight giant creatures threatening their survival,9.4
+18,Death Note,series,anime,thriller,japanese,2006,A student gains a notebook with deadly powers,9.3
+19,The Social Dilemma,documentary,hollywood,documentary,english,2020,A deep look into the dangers of social media,8.5
+20,Planet Earth,documentary,hollywood,documentary,english,2006,A breathtaking documentary about life on Earth,9.6
