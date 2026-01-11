@@ -4,3 +4,4 @@ __pycache__/
 test_filter.py
 test_similarity.py
 __pycache__/
+.env

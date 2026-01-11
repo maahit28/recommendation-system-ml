@@ -1,12 +1,7 @@
 import pandas as pd
-import basic_recommender
 
 def load_movies(path="data/movies.csv"):
-    """
-    Load movie dataset
-    """
     return pd.read_csv(path)
-
 
 def filter_movies(
     df,
@@ -14,9 +9,6 @@ def filter_movies(
     region=None,
     genre=None
 ):
-    """
-    Filter movies based on user preferences
-    """
     filtered_df = df.copy()
 
     if content_type:

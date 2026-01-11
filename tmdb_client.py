@@ -3,11 +3,32 @@ import time
 import requests
 import pandas as pd
 from dotenv import load_dotenv
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 load_dotenv()
 
 API_KEY = os.getenv("TMDB_API_KEY")
 BASE_URL = "https://api.themoviedb.org/3"
+
+if not API_KEY:
+    raise ValueError("TMDB API key not found in .env")
+
+session = requests.Session()
+
+retries = Retry(
+    total=5,
+    backoff_factor=1.5,
+    status_forcelist=[429, 500, 502, 503, 504]
+)
+
+adapter = HTTPAdapter(max_retries=retries)
+session.mount("https://", adapter)
+
+HEADERS = {
+    "User-Agent": "Mozilla/5.0",
+    "Accept": "application/json"
+}
 
 GENRE_MAP = {
     "action": 28,
@@ -27,17 +48,15 @@ LANGUAGE_MAP = {
     "anime": "ja"
 }
 
-def infer_region(language):
+def infer_region(lang):
     return {
         "en": "hollywood",
         "hi": "bollywood",
         "ko": "korean",
         "ja": "anime"
-    }.get(language, "other")
+    }.get(lang, "other")
 
-def fetch_movies(content_type="movie", genre="action", region="hollywood", pages=3):
-    if not API_KEY:
-        raise ValueError("TMDB_API_KEY environment variable is not set. Please check your .env file.")
+def fetch_movies(content_type="movie", genre="action", region="hollywood", pages=2):
 
     endpoint = "discover/movie" if content_type == "movie" else "discover/tv"
 
@@ -47,36 +66,49 @@ def fetch_movies(content_type="movie", genre="action", region="hollywood", pages
     results = []
 
     for page in range(1, pages + 1):
+
         params = {
             "api_key": API_KEY,
-            "with_genres": genre_id,
-            "with_original_language": language,
             "sort_by": "popularity.desc",
             "page": page
         }
 
+        if genre_id:
+            params["with_genres"] = genre_id
+
+        if language:
+            params["with_original_language"] = language
+
         try:
-            response = requests.get(f"{BASE_URL}/{endpoint}", params=params, timeout=10)
+            response = session.get(
+                f"{BASE_URL}/{endpoint}",
+                params=params,
+                headers=HEADERS,
+                timeout=10
+            )
+
             response.raise_for_status()
-        except requests.exceptions.RequestException as e:
-            print(f"Error fetching movies: {e}")
+
+            data = response.json().get("results", [])
+
+            for item in data:
+                lang = item.get("original_language")
+
+                results.append({
+                    "title": item.get("title") or item.get("name"),
+                    "description": item.get("overview", ""),
+                    "year": (item.get("release_date") or item.get("first_air_date", ""))[:4],
+                    "genre": genre,
+                    "region": infer_region(lang),
+                    "content_type": content_type,
+                    "popularity": item.get("popularity", 0),
+                    "poster_url": f"https://image.tmdb.org/t/p/w500{item.get('poster_path')}" if item.get("poster_path") else None
+                })
+
+            time.sleep(0.5)
+
+        except Exception as e:
+            print("Error fetching movies:", e)
             continue
-
-        for item in response.json().get("results", []):
-            poster_path = item.get("poster_path")
-            poster_url = f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else None
-
-            results.append({
-                "title": item.get("title") or item.get("name"),
-                "description": item.get("overview", ""),
-                "year": (item.get("release_date") or item.get("first_air_date", ""))[:4],
-                "genre": genre,
-                "region": infer_region(item.get("original_language")),
-                "content_type": content_type,
-                "popularity": item.get("popularity", 0),
-                "poster_url": poster_url
-            })
-
-        time.sleep(0.3)
 
     return pd.DataFrame(results)
