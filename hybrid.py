@@ -1,44 +1,60 @@
-import pandas as pd
-from recommender.recommender.filter import filter_movies
-from similarity import TextSimilarityRecommender
-
+from tmdb_client import fetch_movies
+from similarity import compute_similarity
 
 class HybridMovieRecommender:
-    def __init__(self, data_path="data/movies.csv"):
-        # Load dataset
-        self.df = pd.read_csv(data_path)
 
-    def recommend(
-        self,
-        user_text,
-        content_type=None,
-        region=None,
-        genre=None,
-        top_n=15
-    ):
-        """
-        Hybrid recommendation:
-        1. Filter by preferences
-        2. Rank by text similarity
-        """
+    def recommend(self, user_text, content_type="movie", region="hollywood", genre="action", top_n=10):
 
-        # Step 1: Filter dataset
-        filtered_df = filter_movies(
-            self.df,
-            content_type=content_type,
-            region=region,
-            genre=genre
-        )
+        text = user_text.lower()
 
-        # If no movies left after filtering
-        if filtered_df.empty:
-            return pd.DataFrame()
+        INTENT_GENRE = {
+            "romance": ["romantic", "love"],
+            "action": ["action", "fight", "war"],
+            "thriller": ["thriller", "crime", "mystery"],
+            "sci-fi": ["sci-fi", "space", "future"],
+            "documentary": ["documentary", "real"],
+            "horror": ["horror", "scary", "ghost"]
+        }
 
-        # Step 2: Similarity ranking
-        similarity_model = TextSimilarityRecommender(filtered_df)
-        results = similarity_model.recommend(
-            user_text=user_text,
-            top_n=top_n
-        )
+        INTENT_REGION = {
+            "korean": ["korean", "k-drama"],
+            "anime": ["anime"],
+            "bollywood": ["bollywood", "hindi"],
+            "hollywood": ["hollywood"]
+        }
 
-        return results
+        for g, keys in INTENT_GENRE.items():
+            if any(k in text for k in keys):
+                genre = g
+                break
+
+        for r, keys in INTENT_REGION.items():
+            if any(k in text for k in keys):
+                region = r
+                break
+
+        if any(k in text for k in ["series", "show", "drama"]):
+            content_type = "series"
+
+        df = fetch_movies(content_type, genre, region)
+
+        if df.empty:
+            df = fetch_movies("movie", genre, "hollywood")
+
+        if df.empty:
+            return df
+
+        df = compute_similarity(df, user_text)
+
+        df["popularity_norm"] = df["popularity"] / df["popularity"].max()
+        df["final_score"] = 0.8 * df["similarity_score"] + 0.2 * df["popularity_norm"]
+
+        df = df.sort_values("final_score", ascending=False)
+
+        self.last_intent = {
+            "genre": genre,
+            "region": region,
+            "content_type": content_type
+        }
+
+        return df.head(top_n)
