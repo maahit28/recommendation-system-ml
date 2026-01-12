@@ -5,7 +5,6 @@ import pandas as pd
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-load_dotenv()
 
 API_KEY = os.environ.get("TMDB_API_KEY")
 BASE_URL = "https://api.themoviedb.org/3"
