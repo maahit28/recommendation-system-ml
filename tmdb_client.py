@@ -2,7 +2,6 @@ import os
 import time
 import requests
 import pandas as pd
-from dotenv import load_dotenv
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
