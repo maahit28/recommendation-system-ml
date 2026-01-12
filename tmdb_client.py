@@ -7,7 +7,7 @@ from urllib3.util.retry import Retry
 
 load_dotenv()
 
-API_KEY = os.getenv("TMDB_API_KEY")
+API_KEY = os.environ.get("TMDB_API_KEY")
 BASE_URL = "https://api.themoviedb.org/3"
 
 if not API_KEY:
